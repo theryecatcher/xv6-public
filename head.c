@@ -1,4 +1,4 @@
-/*Description	: Print Hello World on the screen
+/*Description	: Read lines from file or input/pipe
 	Author		: Anoop Sundaresh
 	Date		: 02/12/2018
 */
@@ -33,52 +33,45 @@ void head(int fd, int noOfLines)
 
 int main(int argc, char *argv[])
 {
-	int fd, i;
+	int fd, i, lineCount;
 
 	// If user has used redirection on the command line
 	if(argc <= 1){
-		head(0, 10);
+		lineCount = 10;
+		head(0, lineCount);
 		exit();
 	}
 
-	// If user dierctly gives file as input
-	else if(argc == 2)
-	{
-		for(i = 1; i < argc; i++){
-			if((fd = open(argv[i], 0)) < 0){
-				printf(1, "head: cannot open %s\n", argv[i]);
-				exit();
+	else {
+		switch(argc){
+			case 2 :
+			{
+				lineCount = 10;
+				i = 1;
+				break;
 			}
-			head(fd, 10);
-			close(fd);
-		}
-	}
-
-	// if user specifies no. of lines to be read
-	else if(argc == 3)
-	{
-		char l_str[512];
-		strcpy(l_str, argv[1]);
-		char *l_cptr = l_str;
-		l_cptr = l_cptr + 1; //Compensating for the hyphen(-)
-		int lineCount = atoi(l_cptr);
-
-		for(i = 2; i < argc; i++){
-			if((fd = open(argv[i], 0)) < 0){
-				printf(1, "head: cannot open %s\n", argv[i]);
-				exit();
+			case 3 :
+			{
+				char l_str[512];
+				strcpy(l_str, argv[1]);
+				char *l_cptr = l_str;
+				l_cptr = l_cptr + 1; //Compensating for the hyphen(-)
+				lineCount = atoi(l_cptr);
+				i = 2;
+				break;
 			}
-			head(fd, lineCount);
-			close(fd);
+			case 4 :
+			{
+				lineCount = atoi (argv[2]);
+				i = 3;
+				break;
+			}
+			default:
+				printf(1, "head : Unknon Syntax\n");
+				exit();
 		}
-	}
 
-	// if user specifies no. of lines to be read as -n
-	else if(argc == 4)
-	{
-		int lineCount = atoi (argv[2]);
-
-		for(i = 3; i < argc; i++){
+		for(; i < argc; i++){
 			if((fd = open(argv[i], 0)) < 0){
 				printf(1, "head: cannot open %s\n", argv[i]);
 				exit();
@@ -87,9 +80,6 @@ int main(int argc, char *argv[])
 			close(fd);
 		}
 	}
-
-	else
-		printf(1, "head : Unknon Syntax\n");
-
+	
 	exit();
 }
