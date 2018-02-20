@@ -9,6 +9,6 @@
 
 int main()
 {
-	printf(1, "Hello World\n");
-	exit();
+  printf(1, "Hello World\n");
+  exit();
 }

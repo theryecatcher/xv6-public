@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 			}
 			case 3 :
 			{
-				char l_str[512];
+				char l_str[10];
 				strcpy(l_str, argv[1]);
 				char *l_cptr = l_str;
 				l_cptr = l_cptr + 1; //Compensating for the hyphen(-)
