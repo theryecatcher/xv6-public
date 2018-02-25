@@ -3,43 +3,45 @@
 #include "user.h"
 #include "fcntl.h"
 
-char buf [512];
+char accumBuff[512];
 
 void tail (int fd, int lineCount) 
 { 
   int n;
   int numLines = 0;
-  int linesToPrint = 0;
-  int buffSize = 0;
+  int skipLines = 0;
+  int noOfChars = 0;
 
-  char *buffer = (char*) malloc (500000);
+  char *readBuffer = (char*) malloc(500000);
   
-  while ((n = read(fd, buf, sizeof(buf))) > 0) {
+  while ((n = read(fd, accumBuff, sizeof(accumBuff))) > 0) {
     for (int i = 0; i<n; i++) {
-      buffer[buffSize] = (char)buf[i];
-      buffSize++;
-      if(buf[i] == '\n')
+      readBuffer[noOfChars] = (char)accumBuff[i];
+      noOfChars++;
+      if(accumBuff[i] == '\n')
         numLines++;
     }
   }
 
   if (n < 0) {
     printf (1, "tail: read error \n");
+    free (readBuffer);
     exit ();
   }
-  if (numLines < lineCount)
-    linesToPrint = 0;
-  
-  linesToPrint = numLines - lineCount;
 
-  int counter = 0;
-  for (int i = 0; i < buffSize; i++) {
-    if (counter >= linesToPrint)
-      printf(1,"%c",buffer[i]);
-    if (buffer[i] == '\n')
-      counter++;
+  if (numLines < lineCount)
+    skipLines = 0;
+
+  skipLines = numLines - lineCount;
+
+  int printCounter = 0;
+  for (int i = 0; i < noOfChars; i++) {
+    if (printCounter >= skipLines)
+      printf(1,"%c",readBuffer[i]);
+    if (readBuffer[i] == '\n')
+      printCounter++;
   }
-  free (buffer);
+  free (readBuffer);
 }
 
 int main (int argc, char *argv[]) 
