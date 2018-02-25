@@ -33,7 +33,9 @@ void head(int fd, int noOfLines)
 
 int main(int argc, char *argv[])
 {
-	int fd, i, lineCount;
+	int fd = -1; 
+	int i = 0;
+	int lineCount = 0;
 
 	// If user gives direct input on the command line
 	if(argc <= 1){
@@ -42,40 +44,39 @@ int main(int argc, char *argv[])
 		exit();
 	}
 
-	else {
-		switch(argc){
-			case 2 :
-			{
-				lineCount = 10;
-				i = 1;
-				break;
-			}
-			case 3 :
-			{
-				char lStr[10];
-				strcpy(lStr, argv[1]);
-				char *lCptr = lStr;
-				lCptr = lCptr + 1; //Compensating for the hyphen(-)
-				lineCount = atoi(lCptr);
-				i = 2;
-				break;
-			}
-			case 4 :
-			{
-				lineCount = atoi (argv[2]);
-				i = 3;
-				break;
-			}
-			default:
-				printf(1, "head : Unknon Syntax\n");
-				exit();
+	else if (argv[1][0] == '-')
+	{
+		if (argc >= 4 && argv[1][1] == 'n')
+		{
+			lineCount = atoi(argv[2]);
+			i = 3;
 		}
+		else if (argc >= 3)
+		{
+			char lStr[10];
+			strcpy(lStr, argv[1]);
+			char *lCptr = lStr;
+			lCptr = lCptr + 1; //Compensating for the hyphen(-)
+			lineCount = atoi(lCptr);
+			i = 2;
+		}
+	}
 
-		for(; i < argc; i++){
-			if((fd = open(argv[i], 0)) < 0){
-				printf(1, "head: cannot open %s\n", argv[i]);
-				exit();
-			}
+	else 
+	{
+		lineCount = 10;
+		i = 1;
+	}
+
+	for(; i < argc; i++){
+		if((fd = open(argv[i], 0)) < 0){
+			printf(1, "head: cannot open %s\n", argv[i]);
+			exit();
+		}
+		if (lineCount == 0)
+			printf(1, "Error : Undefined Integer for number of lines\n");
+		else
+		{
 			head(fd, lineCount);
 			close(fd);
 		}
