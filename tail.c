@@ -1,3 +1,8 @@
+/*Description	: Read lines from file or input/pipe
+	Author		: Anoop Sundaresh
+	Date		: 02/20/2018
+*/
+
 #include "types.h"
 #include "stat.h"
 #include "user.h"

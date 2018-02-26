@@ -11,9 +11,8 @@ char accumBuff[512];
 
 void head(int fd, int noOfLines)
 {
-	int n, lines;
-
-	lines = 0;
+	int n;
+	int lines = 0;
 	while(((n = read(fd, accumBuff, sizeof(accumBuff))) > 0) && lines < noOfLines) {
 		for(int i=0; i<n && lines < noOfLines; i++){
 			if (accumBuff[i] != '\n')
@@ -31,6 +30,13 @@ void head(int fd, int noOfLines)
 	}
 }
 
+int noOfLines(char *lCptr)
+{
+	lCptr = lCptr + 1; //Compensating for the hyphen(-)
+	int lineCount = atoi(lCptr);
+	return lineCount;
+}
+
 int main(int argc, char *argv[])
 {
 	int fd = -1; 
@@ -46,22 +52,32 @@ int main(int argc, char *argv[])
 
 	else if (argv[1][0] == '-')
 	{
-		if (argc >= 4 && argv[1][1] == 'n')
+		if (argv[1][1] == 'n')
 		{
-			lineCount = atoi(argv[2]);
-			i = 3;
+			if (argc >= 4)
+			{
+				lineCount = atoi(argv[2]);
+				i = 3;
+			}
+			else
+			{
+				lineCount = atoi(argv[2]);
+				head(0, lineCount);
+				exit();
+			}
 		}
 		else if (argc >= 3)
 		{
-			char lStr[10];
-			strcpy(lStr, argv[1]);
-			char *lCptr = lStr;
-			lCptr = lCptr + 1; //Compensating for the hyphen(-)
-			lineCount = atoi(lCptr);
+			lineCount = noOfLines(argv[1]);
 			i = 2;
 		}
+		else if (argc >= 2)
+		{
+			lineCount = noOfLines(argv[1]);
+			head(0, lineCount);
+			exit();
+		}
 	}
-
 	else 
 	{
 		lineCount = 10;
@@ -71,6 +87,9 @@ int main(int argc, char *argv[])
 	for(; i < argc; i++){
 		if((fd = open(argv[i], 0)) < 0){
 			printf(1, "head: cannot open %s\n", argv[i]);
+			printf(1, "<===Standard Input===>\n");
+			lineCount = 10;
+			head(0, lineCount);
 			exit();
 		}
 		if (lineCount == 0)
@@ -81,6 +100,6 @@ int main(int argc, char *argv[])
 			close(fd);
 		}
 	}
-	
+		
 	exit();
 }
