@@ -7,6 +7,8 @@
 #include "stat.h"
 #include "user.h"
 
+#define DEFLINES 10
+
 char accumBuff[512];
 
 void head(int fd, int noOfLines)
@@ -32,8 +34,9 @@ void head(int fd, int noOfLines)
 
 int noOfLines(char *lCptr)
 {
+	int lineCount = 0;
 	lCptr = lCptr + 1; //Compensating for the hyphen(-)
-	int lineCount = atoi(lCptr);
+	lineCount = atoi(lCptr);
 	return lineCount;
 }
 
@@ -45,7 +48,7 @@ int main(int argc, char *argv[])
 
 	// If user gives direct input on the command line
 	if(argc <= 1){
-		lineCount = 10;
+		lineCount = DEFLINES;
 		head(0, lineCount);
 		exit();
 	}
@@ -66,12 +69,12 @@ int main(int argc, char *argv[])
 				exit();
 			}
 		}
-		else if (argc >= 3)
+		else if (argc == 3)
 		{
 			lineCount = noOfLines(argv[1]);
 			i = 2;
 		}
-		else if (argc >= 2)
+		else if (argc == 2)
 		{
 			lineCount = noOfLines(argv[1]);
 			head(0, lineCount);
@@ -80,7 +83,7 @@ int main(int argc, char *argv[])
 	}
 	else 
 	{
-		lineCount = 10;
+		lineCount = DEFLINES;
 		i = 1;
 	}
 
@@ -88,18 +91,17 @@ int main(int argc, char *argv[])
 		if((fd = open(argv[i], 0)) < 0){
 			printf(1, "head: cannot open %s\n", argv[i]);
 			printf(1, "<===Standard Input===>\n");
-			lineCount = 10;
+			lineCount = DEFLINES;
 			head(0, lineCount);
 			exit();
 		}
 		if (lineCount == 0)
-			printf(1, "Error : Undefined Integer for number of lines\n");
+			printf(1, "Error : Malformed Expression\n");
 		else
 		{
 			head(fd, lineCount);
 			close(fd);
 		}
 	}
-		
 	exit();
 }

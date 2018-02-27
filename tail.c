@@ -8,6 +8,8 @@
 #include "user.h"
 #include "fcntl.h"
 
+#define DEFLINES 10
+
 char accumBuff[512];
 
 void tail (int fd, int lineCount) 
@@ -56,7 +58,7 @@ int main (int argc, char *argv[])
 	int lineCount = 0;
 
   if(argc <= 1){
-		lineCount = 10;
+		lineCount = DEFLINES;
 		tail(0, lineCount);
 		exit();
 	}
@@ -81,7 +83,7 @@ int main (int argc, char *argv[])
 
   else 
 	{
-		lineCount = 10;
+		lineCount = DEFLINES;
 		i = 1;
 	}
 
@@ -91,7 +93,7 @@ int main (int argc, char *argv[])
 			exit();
 		}
 		if (lineCount == 0)
-			printf(1, "Error : Undefined Integer for number of lines\n");
+			printf(1, "Error : Malformed Expression\n");
 		else
 		{
 			tail(fd, lineCount);
