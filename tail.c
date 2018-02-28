@@ -22,6 +22,7 @@ void tail (int fd, int lineCount)
 	if ((filePtr = open("tmpfile", O_CREATE | O_RDWR)) < 0)
 	{
 		printf (2, "tail: write permission error\n");
+		free (accumBuff);
 		exit ();
 	}
 
@@ -40,6 +41,7 @@ void tail (int fd, int lineCount)
 	if (n < 0) 
 	{
 		printf (2, "tail: read error\n");
+		free (accumBuff);
 		exit ();
 	}
 
@@ -51,6 +53,7 @@ void tail (int fd, int lineCount)
 	if ((filePtr = open("tmpfile", 0)) < 0)
 	{
 		printf (2, "tail: read permission error\n");
+		free (accumBuff);
 		exit ();
 	}
 
