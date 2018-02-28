@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 			exit();
 		}
 		if (lineCount == 0)
-			printf(1, "Error : Malformed Expression\n");
+			printf(2, "Error : Malformed Expression\n");
 		else
 		{
 			tail(fd, lineCount);
